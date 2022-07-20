@@ -1,0 +1,32 @@
+version: '3'
+services:
+  jerry:
+    image: yangrq1018/jerry
+    environment:
+      TZ: "Asia/Shanghai"
+      TL_JERRY_TOKEN: "1700046743:AAH9KQMo8M_1J-yCULz7eLVu5YYlMA9HQ9o"
+      HTTP_PROXY: "http://host.docker.internal:7890"
+      HTTPS_PROXY: "http://host.docker.internal:7890"
+      GOOGLE_APPLICATION_CREDENTIALS: /etc/jerry/gofin-329802-aa4f8b53d1fd.json
+      TORRENT_TRACKER_BLOCK_HOSTNAME: tracker.openwebtorrent.com;peertube.cpy.re;tracker.files.fm
+      TORRENT_TRACKER_LIST: https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all_ip.txt
+      TWITTER_API_KEY: R4PtFbrm3xiyUD6zcGNfgehQ4
+      TWITTER_API_SECRET: mejNx78u7RNUUHn5VeorIUyFaA0BIXIWHLq5aFbT4Bg56BQXVl
+      NINTENDO_SESSION_TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NTA5NDMyMDUsImV4cCI6MTcxNDAxNTIwNSwic3ViIjoiYjJiZjFkZTI4NGZjNjI2MyIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMubmludGVuZG8uY29tIiwic3Q6c2NwIjpbMCw4LDksMTcsMjNdLCJ0eXAiOiJzZXNzaW9uX3Rva2VuIiwianRpIjo4NDI2MDYwNDMyLCJhdWQiOiI3MWI5NjNjMWI3YjZkMTE5In0.pK-l4mXTjEFdUZzftKsAAtHSkKO4EG_O8c5sM5lNyo0
+    container_name: jerry
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /mnt/Emby/Emby/Download:/etc/download
+      - /home/xlc1/.config/jerry:/etc/jerry
+    working_dir: /etc/download
+    ports:
+      - "3980:3980" # RESTful controller port
+      - "8482:8482" # ant electron backend port
+      - "42096:42096" # dht port
+    build:
+      context: .
+      dockerfile: ./telegram/jerry/Dockerfile
+      args:
+        http_proxy: "http://172.17.0.1:7890"
+        https_proxy: "http://172.17.0.1:7890"
