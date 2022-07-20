@@ -10,11 +10,10 @@ WORKDIR /gofin-src
 COPY go.mod /gofin-src
 #ENV GOPROXY https://goproxy.io,direct
 RUN go mod download
-RUN go install github.com/ahmetb/govvv@latest
 
 # copy source files
 COPY . /gofin-src
-RUN govvv build -o jerry -tags docker -version $(go generate ./telegram/jerry) ./telegram/jerry
+RUN go build -o jerry -tags docker ./telegram/jerry
 RUN mv ./jerry /jerry
 
 FROM alpine:latest

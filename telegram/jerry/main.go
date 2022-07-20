@@ -18,9 +18,6 @@ var (
 	Version   string
 )
 
-// tag is like "jerry/"
-//go:generate go run github.com/yangrq1018/jerry-bot/version/main -prefix jerry/
-
 // JerryBot
 // Production bot
 // 在这里配置Jerry Bot的功能
