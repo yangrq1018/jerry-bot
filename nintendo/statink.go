@@ -30,11 +30,11 @@ const (
 	userLang    = "zh-cn" // have no effects, can be empty actually
 	agent       = "splatnet2statink"
 	// agentVersion is splatnet2statink version. Agent version in payload to battle upload
-	agentVersion = "1.7.1"
+	agentVersion = "1.7.3"
 )
 
-//  Nintendo Switch Online app version
-//  perhaps check every day?
+// Nintendo Switch Online app version
+// perhaps check every day?
 func getNSOAppVersion() string {
 	res, err := http.Get("https://itunes.apple.com/lookup?id=1234806557&country=JP")
 	if err != nil {

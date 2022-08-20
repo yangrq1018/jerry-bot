@@ -40,6 +40,7 @@ const (
 	// statink endpoint
 	endpointStatinkUploadBattle = "https://stat.ink/api/v2/battle"
 
+	// two servers below are for getting a unique HMAC (keyed-hash message authentication code)
 	// s2s server
 	endpointS2s = "https://elifessler.com/s2s/api/gen2"
 
