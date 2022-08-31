@@ -13,7 +13,7 @@ services:
       NINTENDO_SESSION_TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NTA5NDMyMDUsImV4cCI6MTcxNDAxNTIwNSwic3ViIjoiYjJiZjFkZTI4NGZjNjI2MyIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMubmludGVuZG8uY29tIiwic3Q6c2NwIjpbMCw4LDksMTcsMjNdLCJ0eXAiOiJzZXNzaW9uX3Rva2VuIiwianRpIjo4NDI2MDYwNDMyLCJhdWQiOiI3MWI5NjNjMWI3YjZkMTE5In0.pK-l4mXTjEFdUZzftKsAAtHSkKO4EG_O8c5sM5lNyo0
     container_name: jerry
     volumes:
-      - /home/martin/jerry-bot:/etc/jerry
+      - /vault/jerry:/etc/jerry
     working_dir: /etc/download
     ports:
       - "3980:3980" # RESTful controller port
