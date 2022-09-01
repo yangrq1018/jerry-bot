@@ -3,6 +3,8 @@ services:
   jerry:
     image: yangrq1018/jerry
     environment:
+      HTTP_PROXY: "http://host.docker.internal:7890"
+      HTTPS_PROXY: "http://host.docker.internal:7890"
       TZ: "Asia/Shanghai"
       TL_JERRY_TOKEN: "1700046743:AAH9KQMo8M_1J-yCULz7eLVu5YYlMA9HQ9o"
       GOOGLE_APPLICATION_CREDENTIALS: /etc/jerry/credential.json
@@ -12,6 +14,8 @@ services:
       TWITTER_API_SECRET: mejNx78u7RNUUHn5VeorIUyFaA0BIXIWHLq5aFbT4Bg56BQXVl
       NINTENDO_SESSION_TOKEN: eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NTA5NDMyMDUsImV4cCI6MTcxNDAxNTIwNSwic3ViIjoiYjJiZjFkZTI4NGZjNjI2MyIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMubmludGVuZG8uY29tIiwic3Q6c2NwIjpbMCw4LDksMTcsMjNdLCJ0eXAiOiJzZXNzaW9uX3Rva2VuIiwianRpIjo4NDI2MDYwNDMyLCJhdWQiOiI3MWI5NjNjMWI3YjZkMTE5In0.pK-l4mXTjEFdUZzftKsAAtHSkKO4EG_O8c5sM5lNyo0
     container_name: jerry
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - /vault/jerry:/etc/jerry
     working_dir: /etc/download
@@ -22,3 +26,6 @@ services:
     build:
       context: .
       dockerfile: ./telegram/jerry/Dockerfile
+      args:
+          http_proxy: http://172.17.0.1:7890
+          https_proxy: http://172.17.0.1:7890

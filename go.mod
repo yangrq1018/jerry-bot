@@ -2,7 +2,7 @@ module github.com/yangrq1018/jerry-bot
 
 go 1.18
 
-replace github.com/thrasher-corp/gocryptotrader => github.com/yangrq1018/gocryptotrader v0.0.0-20220720142357-9a7017398425
+replace github.com/thrasher-corp/gocryptotrader => github.com/yangrq1018/gocryptotrader v0.0.0-20220901093055-7f14beee8734
 
 require (
 	cloud.google.com/go/storage v1.23.0

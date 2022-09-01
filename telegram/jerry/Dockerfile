@@ -8,7 +8,6 @@ WORKDIR /gofin-src
 
 # copy dependency file first, avoid frequent go.mod download
 COPY go.mod /gofin-src
-#ENV GOPROXY https://goproxy.io,direct
 RUN go mod download
 
 # copy source files
@@ -19,7 +18,7 @@ RUN mv ./jerry /jerry
 FROM alpine:latest
 
 # for time.LoadLocation
-RUN apk add --no-cache ca-certificates tzdata libc6-compat libgcc libstdc++
+RUN apk add --no-cache ca-certificates tzdata
 # the trailing slash is a must for .json to get copied to directory /etc/jerry/
 COPY --from=builder /jerry /
 
