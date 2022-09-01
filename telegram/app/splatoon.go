@@ -176,7 +176,7 @@ func (s *splatoonCommand) teardown(*telegram.Bot, os.Signal) error {
 		cookies[k.(int)] = v.(string)
 		return true
 	})
-	logger.Printf("save %d cookies to gcloud", len(cookies))
+	logger.Infof("save %d cookies to gcloud", len(cookies))
 	return gcloud.SaveObject(gcloudObjectKeySplatoon, cookies)
 }
 

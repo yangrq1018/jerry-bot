@@ -504,6 +504,7 @@ func (s Subscription) SendMsg(b *telegram.Bot) error {
 
 /*
 build a cron header that runs every day at hour:minute
+
 	# ┌───────────── minute (0 - 59)
 	# │ ┌───────────── hour (0 - 23)
 	# │ │ ┌───────────── day of the month (1 - 31)
@@ -619,7 +620,8 @@ func (l *Reminder) loadSubscribersFromCloud() error {
 	var subs []PersistentSubscription
 	err := gcloud.LoadObject(gcloudObjectKey, &subs)
 	if err != nil {
-		return fmt.Errorf("cannot load subscribers from cloud: %v", err)
+		logger.Errorf("cannot load subscribers from cloud: %v", err)
+		return nil
 	}
 	for i := range subs {
 		sub := decodeSubscription(subs[i])

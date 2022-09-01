@@ -39,13 +39,6 @@ const (
 
 	// statink endpoint
 	endpointStatinkUploadBattle = "https://stat.ink/api/v2/battle"
-
-	// two servers below are for getting a unique HMAC (keyed-hash message authentication code)
-	// s2s server
-	endpointS2s = "https://elifessler.com/s2s/api/gen2"
-
-	// Flagp server (android emulator running Nintendo Online app)
-	endpointFlapg = "https://flapg.com/ika2/api/login?public"
 )
 
 var client = http.Client{
@@ -278,17 +271,17 @@ func GetCookie(sessionToken, lang string) (string, string, error) {
 		"Accept-Encoding": "gzip",
 	})
 
-	timestamp := time.Now().Unix()
+	timestamp := strconv.Itoa(int(time.Now().Unix()))
 	guid := uuid.New().String()
-	fToken, err := callFlapgApi(idToken, guid, timestamp, "nso")
+	f, err := callImink(idToken, guid, timestamp, "1")
 	if err != nil {
 		return "", "", err
 	}
 	parameter := postPayload{
-		"f":          fToken.String("f"),
-		"naIdToken":  fToken.String("p1"),
-		"timestamp":  fToken.String("p2"),
-		"requestId":  fToken.String("p3"),
+		"f":          f,
+		"naIdToken":  idToken,
+		"timestamp":  timestamp,
+		"requestId":  guid,
 		"naCountry":  userInfo.Country,
 		"naBirthday": userInfo.Birthday,
 		"language":   userInfo.Language,
@@ -301,7 +294,7 @@ func GetCookie(sessionToken, lang string) (string, string, error) {
 
 	// ugly way to handle undeclared deep json
 	idToken = splatoonToken.Json("result").Json("webApiServerCredential").String("accessToken")
-	flapgApp, err := callFlapgApi(idToken, guid, timestamp, "app") // call with different type
+	f, err = callImink(idToken, guid, timestamp, "2") // call the second time
 	if err != nil {
 		return "", "", err
 	}
@@ -322,13 +315,16 @@ func GetCookie(sessionToken, lang string) (string, string, error) {
 	body = postPayload{
 		"parameter": postPayload{
 			"id":                5741031244955648,
-			"f":                 flapgApp["f"],
-			"registrationToken": flapgApp["p1"],
-			"timestamp":         flapgApp["p2"],
-			"requestId":         flapgApp["p3"],
+			"f":                 f,
+			"registrationToken": idToken,
+			"timestamp":         timestamp,
+			"requestId":         guid,
 		},
 	}
 	res, err := postHTTPJson(endpointWebserviceToken, body, appHead, nil)
+	if err != nil {
+		return "", "", err
+	}
 	splatoonAccessToken := res.Json("result").String("accessToken")
 	appHead = makeHeader(map[string]string{
 		"Host":                    "app.splatoon2.nintendo.net",
@@ -345,6 +341,9 @@ func GetCookie(sessionToken, lang string) (string, string, error) {
 	})
 
 	cookies, err := getHTTPCookies(fmt.Sprintf(endpointSplatNet, lang), appHead)
+	if err != nil {
+		return "", "", err
+	}
 	var iksmSession string
 	for _, cookie := range cookies {
 		if cookie.Name == "iksm_session" {
@@ -390,48 +389,25 @@ func getSessionToken(sessionTokenCode, authCodeVerifier string) (string, error) 
 	if err = errInRes(res); err != nil {
 		return "", err
 	}
-	return res["session_token"].(string), nil
+	return res.String("session_token"), nil
 }
 
-// retrieve f token from external api
-func callFlapgApi(idToken, guid string, timestamp int64, t string) (JSONResponse, error) {
-	hash, err := getHashFromS2sApi(idToken, timestamp)
-	if err != nil {
-		return nil, err
-	}
-	apiAppHead := makeHeader(map[string]string{
-		"x-token": idToken,
-		"x-time":  strconv.Itoa(int(timestamp)),
-		"x-guid":  guid,
-		"x-hash":  hash,
-		"x-ver":   "3",
-		"x-iid":   t,
+func callImink(idToken, guid, timestamp, step string) (string, error) {
+	header := makeHeader(map[string]string{
+		"User-Agent":   "splatnet2statink/" + agentVersion,
+		"Content-Type": "application/json; charset=utf-8",
 	})
-	apiResponse, err := getHTTPJson(endpointFlapg, apiAppHead)
-	if err != nil {
-		return nil, err
+	body := postPayload{
+		"timestamp":  timestamp,
+		"requestId":  guid,
+		"hashMethod": step,
+		"token":      idToken,
 	}
-	return apiResponse.Json("result"), nil
-}
-
-// Passes an id_token and timestamp to the s2s API and fetches the resultant hash from the response.
-func getHashFromS2sApi(idToken string, timestamp int64) (string, error) {
-	apiAppHead := makeHeader(map[string]string{
-		"User-Agent": agent + "/" + agentVersion,
-	})
-	apiBody := map[string]interface{}{
-		"naIdToken": idToken,
-		"timestamp": timestamp,
-	}
-	// you need a special post with url-encoded form data, not json plain text
-	apiResponse, err := postHTTPURLEncodedForm(endpointS2s, apiBody, apiAppHead)
+	res, err := postHTTPJson("https://api.imink.app/f", body, header, nil)
 	if err != nil {
 		return "", err
 	}
-	if err = apiResponse.Error("error"); err != nil {
-		return "", err
-	}
-	return apiResponse.String("hash"), nil
+	return res.String("f"), nil
 }
 
 // accessToken should be the token returned by getIdToken
