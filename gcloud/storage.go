@@ -2,13 +2,14 @@ package gcloud
 
 import (
 	"bytes"
-	"cloud.google.com/go/storage"
 	"context"
 	"encoding/json"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"io"
 	"time"
+
+	"cloud.google.com/go/storage"
+	log "github.com/sirupsen/logrus"
 )
 
 // global unique storage key, site ownership endorsed
@@ -29,6 +30,8 @@ func LoadObject(object string, data interface{}) error {
 
 	rc, err := storageClient.Bucket(storageBucket).Object(object).NewReader(ctx)
 	if err == storage.ErrObjectNotExist {
+		return err
+	} else if err != nil {
 		return err
 	}
 	defer rc.Close()

@@ -2,9 +2,10 @@ package nintendo
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 const (
@@ -23,15 +24,6 @@ func TestLogIn(t *testing.T) {
 	sessionToken, err := LogInFromCommandLine(strings.NewReader(userPickBtnURL + "\n"))
 	assert.NoError(t, err)
 	fmt.Printf("session token: %s\n", sessionToken)
-}
-
-func TestGetHashFromS2sApi(t *testing.T) {
-	naIdToken := "eyJhbGciOiJSUzI1NiIsImtpZCI6IjBiOTZiOWFkLTJkYjQtNDMwOS1iYmUwLTFlNTJmZWRhM2Y2ZiIsImprdSI6Imh0dHBzOi8vYWNjb3VudHMubmludGVuZG8uY29tLzEuMC4wL2NlcnRpZmljYXRlcyJ9.eyJ0eXAiOiJ0b2tlbiIsImlhdCI6MTYzMTgxMTI3MywianRpIjoiZTA5ZTQ3MDAtODYyOC00YTZhLTkxOWMtOTMxZDUyNzEyM2YzIiwiYWM6c2NwIjpbMCw4LDksMTcsMjNdLCJhYzpncnQiOjY0LCJleHAiOjE2MzE4MTIxNzMsImF1ZCI6IjcxYjk2M2MxYjdiNmQxMTkiLCJzdWIiOiJiMmJmMWRlMjg0ZmM2MjYzIiwiaXNzIjoiaHR0cHM6Ly9hY2NvdW50cy5uaW50ZW5kby5jb20ifQ.MARMutigW3UnvxNHqEfoUDIR9JrRuxvPEVPItShWYRRUxXekpNkb8SaNDq_y_SoXy3HwljC547ImOwiIK710bMoMsQEqeh3b6JP_78U8ptMwEbSNE6sJX8cLmQjRFtZF-zYVlkDw4oJpiM1kojnxo6M8fKlkoIK2HaKS0uWJlX6E-QIYRwvEPGSn3sQFksaqAHly7by_KFgTqQXVjQ8EDuyxd6FQBW3JNFhOLuuLkcZtftfB6x5p3OI_wwuhokHKagow29oNBfUufCq521S5VZAQbUlpvUO-ECkyT613lxd9R9gehnEReRBA4YgC-sHczn68LI7kCEt8J9UfCRLmeg"
-	var timestamp int64 = 1631811270
-
-	hash, err := getHashFromS2sApi(naIdToken, timestamp)
-	assert.NoError(t, err)
-	fmt.Println(hash)
 }
 
 func TestGenNewCookie(t *testing.T) {

@@ -398,7 +398,7 @@ func callImink(idToken, guid, timestamp, step string) (string, error) {
 		"Content-Type": "application/json; charset=utf-8",
 	})
 	body := postPayload{
-		"timestamp":  timestamp,
+		// "timestamp":  timestamp, # don't provide this, iksm_session invalid (403)
 		"requestId":  guid,
 		"hashMethod": step,
 		"token":      idToken,
